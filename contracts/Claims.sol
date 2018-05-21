@@ -21,4 +21,9 @@ contract Claims {
         claims[msg.sender][subject][key] = value;
         emit Set(msg.sender, subject, key, value, now);
     }
+
+
+    function get(address subject, bytes32 key) public constant returns (bytes32) {
+        return claims[msg.sender][subject][key];
+    }
 }

@@ -39,4 +39,11 @@ contract('Claims', (accounts) => {
         assert.equal(bytes2s(event.args.key), data[0].key, 'should issued the correct key');
         assert.equal(bytes2s(event.args.value), data[0].value, 'should issued correct value for the key');
     });
+
+    it('should get correspond claim', async () => {
+        await claims.set(subject, data[0].key, data[0].value, {from: issuer});
+        let claim = await claims.get(subject, data[0].key);
+
+        assert.equal(bytes2s(claim), data[0].value, 'should get correspond issued value');
+    });
 });
