@@ -1,9 +1,5 @@
 const Claims = artifacts.require("./Claims.sol");
 
-function bytes2s(key) {
-    return Buffer.from(key.split('00').join('').slice(2), 'hex').toString();
-}
-
 contract('Claims', (accounts) => {
     let claims;
     let subject;
@@ -19,6 +15,10 @@ contract('Claims', (accounts) => {
             value: "value2"
         }
     ];
+
+    const bytes2s = (key) => {
+        return Buffer.from(key.split('00').join('').slice(2), 'hex').toString();
+    };
 
     before(async () => {
         claims = await Claims.deployed();
