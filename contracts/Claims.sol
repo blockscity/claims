@@ -14,7 +14,6 @@ contract Claims {
         address indexed issuer,
         address indexed subject,
         bytes32 indexed key,
-        bytes32 value,
         uint updatedAt);
 
     function set(address subject, bytes32 key, bytes32 value) public {
@@ -23,7 +22,12 @@ contract Claims {
     }
 
 
-    function get(address subject, bytes32 key) public constant returns (bytes32) {
-        return claims[msg.sender][subject][key];
+    function get(address issuer, address subject, bytes32 key) public constant returns (bytes32) {
+        return claims[issuer][subject][key];
+    }
+
+    function unset(address issuer, address subject, bytes32 key) public {
+        emit Unset(issuer, subject, key, now);
+        delete claims[issuer][subject][key];
     }
 }
