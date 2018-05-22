@@ -90,4 +90,14 @@ contract('Claims', (accounts) => {
         let claim = await claims.get(issuer, subject, data[0].key);
         assert.equal(bytes2s(claim), '', 'should get nothing after unset');
     });
+
+
+    it('should not able to unset when key not exists', async () => {
+        try {
+            await claims.unset(issuer, subject, 'not_exists', {from: issuer});
+            assert.fail();
+        } catch (e) {
+            assert.equal(e.message, 'VM Exception while processing transaction: revert')
+        }
+    });
 });

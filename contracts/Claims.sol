@@ -8,13 +8,15 @@ contract Claims {
         address indexed subject,
         bytes32 indexed key,
         bytes32 value,
-        uint updatedAt);
+        uint updatedAt
+    );
 
     event Unset(
         address indexed issuer,
         address indexed subject,
         bytes32 indexed key,
-        uint updatedAt);
+        uint updatedAt
+    );
 
     function set(address subject, bytes32 key, bytes32 value) public {
         claims[msg.sender][subject][key] = value;
@@ -27,9 +29,10 @@ contract Claims {
     }
 
     function unset(address issuer, address subject, bytes32 key) public {
-        require(msg.sender == issuer|| msg.sender == subject);
-        delete claims[issuer][subject][key];
+        require(msg.sender == issuer || msg.sender == subject);
+        require(claims[issuer][subject][key] != 0);
 
+        delete claims[issuer][subject][key];
         emit Unset(msg.sender, subject, key, now);
     }
 }
