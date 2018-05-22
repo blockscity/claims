@@ -1,4 +1,4 @@
-pragma solidity ^0.4.20;
+pragma solidity ^0.4.23;
 
 contract Claims {
     mapping(address => mapping(address => mapping(bytes32 => bytes32))) claims;
