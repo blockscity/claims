@@ -27,7 +27,9 @@ contract Claims {
     }
 
     function unset(address issuer, address subject, bytes32 key) public {
-        emit Unset(issuer, subject, key, now);
+        require(msg.sender == issuer|| msg.sender == subject);
         delete claims[issuer][subject][key];
+
+        emit Unset(msg.sender, subject, key, now);
     }
 }

@@ -4,6 +4,7 @@ contract('Claims', (accounts) => {
     let claims;
     let subject;
     let issuer;
+    let pseudo;
 
     const data = [
         {
@@ -22,8 +23,9 @@ contract('Claims', (accounts) => {
 
     before(async () => {
         claims = await Claims.deployed();
-        issuer = accounts[0];
-        subject = accounts[1];
+        issuer = accounts[1];
+        subject = accounts[2];
+        pseudo = accounts[3];
     });
 
 
@@ -49,13 +51,39 @@ contract('Claims', (accounts) => {
 
     it('should unset claim and fire event as issuer', async () => {
         await claims.set(subject, data[0].key, data[0].value, {from: issuer});
-        let tx = await claims.unset(issuer, subject, data[0].key);
+        let tx = await claims.unset(issuer, subject, data[0].key, {from: issuer});
 
         assert.equal(tx.logs.length, 1, 'should fire 1 event');
 
         let event = tx.logs[0];
         assert.equal(event.event, 'Unset', 'should fire unset event');
         assert.equal(event.args.issuer, issuer, 'should unset claim from issuer');
+        assert.equal(event.args.subject, subject, 'should unset claim for subject');
+        assert.equal(bytes2s(event.args.key), data[0].key, 'should unset claim for subject');
+
+        let claim = await claims.get(issuer, subject, data[0].key);
+        assert.equal(bytes2s(claim), '', 'should get nothing after unset');
+    });
+
+    it('should not able to unset as pseudo', async () => {
+        await claims.set(subject, data[0].key, data[0].value, {from: issuer});
+        try {
+            await claims.unset(issuer, subject, data[0].key, {from: pseudo});
+            assert.fail();
+        } catch (e) {
+            assert.equal(e.message, 'VM Exception while processing transaction: revert')
+        }
+    });
+
+    it('should unset claim and fire event as subject', async () => {
+        await claims.set(subject, data[0].key, data[0].value, {from: issuer});
+        let tx = await claims.unset(issuer, subject, data[0].key, {from: subject});
+
+        assert.equal(tx.logs.length, 1, 'should fire 1 event');
+
+        let event = tx.logs[0];
+        assert.equal(event.event, 'Unset', 'should fire unset event');
+        assert.equal(event.args.issuer, subject, 'should unset claim from issuer');
         assert.equal(event.args.subject, subject, 'should unset claim for subject');
         assert.equal(bytes2s(event.args.key), data[0].key, 'should unset claim for subject');
 
