@@ -23,38 +23,25 @@ describe('claims', () => {
             }]
         }`;
 
+    let client = new ChainClient();
+
+    let ipfs = new IPFS();
+
+
     before(async () => {
-
-    });
-
-    after(async () => {
-
-    });
-
-    beforeEach(async () => {
-
-    });
-
-    afterEach(async () => {
-
-    });
-
-
-    it('should able to get the claim issued by issuer for subject', async () => {
-
-        let client = new ChainClient();
         client.call = (tx) => {
             return "ipfs_hash_for_kayla"
         };
-        let ipfs = new IPFS();
         ipfs.take = (id) => {
             if (id === "ipfs_hash_for_kayla") {
                 return identity;
             } else {
                 return Promise.reject("Not found");
             }
-
         };
+    });
+
+    it('should able to get the claim issued by issuer for subject', async () => {
         let value = await contract(client, "0x0000")
             .sidecar(ipfs)
             .from("0xissuer")

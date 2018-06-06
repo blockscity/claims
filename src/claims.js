@@ -1,3 +1,5 @@
+import Web3 from 'web3';
+
 export const contract = (client, address) => {
     return new Claims(client, address);
 };
@@ -9,8 +11,8 @@ class Claims {
         this.address = address;
     }
 
-    sidecar(ipfs) {
-        this.ipfs = ipfs;
+    sidecar(sidecar) {
+        this._sidecar = sidecar;
         return this;
     }
 
@@ -29,13 +31,17 @@ class Claims {
         let hash = await this.client.call({
             to: this.address,
             data: {
-                issuer: this.issuer,
-                subject: this.subject,
-                key
+                type: "call",
+                method: "get",
+                params: [
+                    this.issuer,
+                    this.subject,
+                    Web3.utils.toHex(key)
+                ]
             }
         });
 
-        return await this.ipfs.take(hash);
+        return await this._sidecar.take(hash);
     }
 
     place(key, value) {
