@@ -7,7 +7,7 @@ import ganache from "ganache-cli";
 import Web3 from 'web3';
 import Claims from '../build/contracts/Claims.json';
 
-describe('Claims', () => {
+describe('ChainClient', () => {
     let chainClient;
     let claims;
     let issuer;

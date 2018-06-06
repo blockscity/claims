@@ -5,7 +5,9 @@
   "main": "truffle.js",
   "scripts": {
     "preinstall": "npm list truffle -g || npm install truffle -g",
-    "test": "mocha --require babel-register src/**/*.spec.js && truffle test --network=test"
+    "pretest": "node_modules/ipfs/src/cli/bin.js init --silent ; node_modules/ipfs/src/cli/bin.js daemon --silent &",
+    "test": "mocha --require babel-register src/**/*.spec.js && truffle test --network=test",
+    "posttest": "pkill -f ipfs"
   },
   "repository": {
     "type": "git",
@@ -26,9 +28,11 @@
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "ganache-cli": "^6.1.0",
+    "ipfs": "^0.29.3",
     "mocha": "^5.2.0"
   },
   "dependencies": {
+    "ipfs-api": "^22.0.1",
     "web3": "^1.0.0-beta.34"
   }
 }
